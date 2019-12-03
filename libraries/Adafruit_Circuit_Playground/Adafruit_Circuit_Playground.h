@@ -87,7 +87,7 @@
 /**************************************************************************/
 class Adafruit_CircuitPlayground {
  public:
-  bool begin(uint8_t brightness=20);
+  boolean begin(uint8_t brightness=20);
 
   Adafruit_CPlay_NeoPixel strip; ///< the neopixel strip object
   Adafruit_CPlay_LIS3DH lis; ///< the accelerometer object
@@ -103,11 +103,11 @@ class Adafruit_CircuitPlayground {
   IRsend                 irSend; ///< the IR send object
 #endif
 
-  bool slideSwitch(void);
-  void redLED(bool v);
-  void playTone(uint16_t freq, uint16_t time, bool wait=true);
-  bool leftButton(void);
-  bool rightButton(void);
+  boolean slideSwitch(void);
+  void redLED(boolean v);
+  void playTone(uint16_t freq, uint16_t time, boolean wait=true);
+  boolean leftButton(void);
+  boolean rightButton(void);
   uint16_t lightSensor(void);
   int16_t soundSensor(void);
   float temperature(void);
@@ -218,7 +218,7 @@ class Adafruit_CircuitPlayground {
     return ((uint32_t)red << 16) | ((uint32_t)green << 8) | blue;
   }
 
-  bool isExpress(void);
+  boolean isExpress(void);
 
  private:
 
