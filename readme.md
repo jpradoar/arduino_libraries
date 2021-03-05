@@ -1,5 +1,5 @@
 <pre>
-# Arduino: 1.8.8
+# Arduino: 1.8.8   https://downloads.arduino.cc/arduino-1.8.8-linux64.tar.xz
 
 ls -l  /home/your-user/Arduino/
 libraries/
