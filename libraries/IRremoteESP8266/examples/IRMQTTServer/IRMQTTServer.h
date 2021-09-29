@@ -1,10 +1,15 @@
 /*
  * Send & receive arbitrary IR codes via a web server or MQTT.
- * Copyright David Conran 2016, 2017, 2018, 2019
+ * Copyright David Conran 2016-2021
  */
 #ifndef EXAMPLES_IRMQTTSERVER_IRMQTTSERVER_H_
 #define EXAMPLES_IRMQTTSERVER_IRMQTTSERVER_H_
 
+#if defined(ESP8266)
+#include <LittleFS.h>
+#else
+#include <SPIFFS.h>
+#endif
 #if defined(ESP8266)
 #include <ESP8266WiFi.h>
 #endif  // ESP8266
@@ -27,6 +32,26 @@
 #define EXAMPLES_ENABLE true
 #endif  // EXAMPLES_ENABLE
 
+// Uncomment one of the following to manually override what
+//    type of persistent storage is used.
+// Warning: Changing filesystems will cause all previous locally
+//    saved configuration data to be lost.
+// #define FILESYSTEM SPIFFS
+// #define FILESYSTEM LittleFS
+#ifndef FILESYSTEM
+// Set the default filesystem if none was specified.
+#ifdef ESP8266
+#define FILESYSTEM LittleFS
+#else
+#define FILESYSTEM SPIFFS
+#endif  // defined(ESP8266)
+#endif  // FILESYSTEM
+
+#if (FILESYSTEM == LittleFS)
+#define FILESYSTEMSTR "LittleFS"
+#else
+#define FILESYSTEMSTR "SPIFFS"
+#endif
 // ---------------------- Board Related Settings -------------------------------
 // NOTE: Make sure you set your Serial Monitor to the same speed.
 #define BAUD_RATE 115200  // Serial port Baud rate.
@@ -76,8 +101,9 @@ const IPAddress kSubnetMask = IPAddress(255, 255, 255, 0);
                                    // The unset default is 8%.
                                    // (Uncomment to enable)
 // Do you want/need mdns enabled? (https://en.wikipedia.org/wiki/Multicast_DNS)
+#ifndef MDNS_ENABLE
 #define MDNS_ENABLE true  // `false` to disable and save ~21k of program space.
-
+#endif  // MDNS_ENABLE
 // ----------------------- HTTP Related Settings -------------------------------
 #define FIRMWARE_OTA true  // Allow remote update of the firmware via http.
                            // Less secure if enabled.
@@ -90,6 +116,12 @@ const IPAddress kSubnetMask = IPAddress(255, 255, 255, 0);
 
 // ----------------------- MQTT Related Settings -------------------------------
 #if MQTT_ENABLE
+#ifndef MQTT_BUFFER_SIZE
+// A value of 768 handles most cases easily. Use 1024 or more when using
+// `REPORT_RAW_UNKNOWNS` is recommended.
+#define MQTT_BUFFER_SIZE 768  // Default MQTT packet buffer size.
+#endif  // MQTT_BUFFER_SIZE
+const uint16_t kMqttBufferSize = MQTT_BUFFER_SIZE;  // Packet Buffer size.
 const uint32_t kMqttReconnectTime = 5000;  // Delay(ms) between reconnect tries.
 
 #define MQTT_ACK "sent"  // Sub-topic we send back acknowledgements on.
@@ -160,13 +192,15 @@ const uint8_t kCaptureTimeout = 15;  // Milliseconds
 const uint16_t kMinUnknownSize = 2 * 10;
 #define REPORT_UNKNOWNS false  // Report inbound IR messages that we don't know.
 #define REPORT_RAW_UNKNOWNS false  // Report the whole buffer, recommended:
-                                   // MQTT_MAX_PACKET_SIZE of 1024 or more
+                                   // MQTT_BUFFER_SIZE of 1024 or more
 
 // Should we use and report individual A/C settings we capture via IR if we
 // can understand the individual settings of the remote.
 // e.g. Aquire the A/C settings from an actual A/C IR remote and override
 //      any local settings set via MQTT/HTTP etc.
+#ifndef USE_DECODED_AC_SETTINGS
 #define USE_DECODED_AC_SETTINGS true  // `false` to disable. `true` to enable.
+#endif  // USE_DECODED_AC_SETTINGS
 // Should we allow or ignore an A/C IR remote to override the A/C protocol/model
 // as set via MQTT or HTTP?
 // e.g. If `true`, you can use any fully supported A/C remote to control
@@ -251,7 +285,7 @@ const uint16_t kJsonAcStateMaxSize = 1024;  // Bytes
 // ----------------- End of User Configuration Section -------------------------
 
 // Constants
-#define _MY_VERSION_ "v1.5.0"
+#define _MY_VERSION_ "v1.5.2"
 
 const uint8_t kRebootTime = 15;  // Seconds
 const uint8_t kQuickDisplayTime = 2;  // Seconds
@@ -380,6 +414,7 @@ void handleRoot(void);
 String addJsReloadUrl(const String url, const uint16_t timeout_s,
                       const bool notify);
 void handleExamples(void);
+String htmlOptionItem(const String value, const String text, bool selected);
 String htmlSelectBool(const String name, const bool def);
 String htmlSelectClimateProtocol(const String name, const decode_type_t def);
 String htmlSelectAcStateProtocol(const String name, const decode_type_t def,

@@ -90,6 +90,9 @@
 #ifndef D_STR_OFFTIMER
 #define D_STR_OFFTIMER D_STR_OFF " " D_STR_TIMER  // Set `D_STR_OFF` first!
 #endif  // D_STR_OFFTIMER
+#ifndef D_STR_TIMERMODE
+#define D_STR_TIMERMODE D_STR_TIMER " " D_STR_MODE  // Set `D_STR_MODE` first!
+#endif  // D_STR_TIMERMODE
 #ifndef D_STR_CLOCK
 #define D_STR_CLOCK "Clock"
 #endif  // D_STR_CLOCK
@@ -135,6 +138,9 @@
 #ifndef D_STR_8C_HEAT
 #define D_STR_8C_HEAT "8C " D_STR_HEAT  // Set `D_STR_HEAT` first!
 #endif  // D_STR_8C_HEAT
+#ifndef D_STR_10C_HEAT
+#define D_STR_10C_HEAT "10C " D_STR_HEAT  // Set `D_STR_HEAT` first!
+#endif  // D_STR_10C_HEAT
 #ifndef D_STR_BUTTON
 #define D_STR_BUTTON "Button"
 #endif  // D_STR_BUTTON
@@ -153,6 +159,12 @@
 #ifndef D_STR_CELSIUS
 #define D_STR_CELSIUS "Celsius"
 #endif  // D_STR_CELSIUS
+#ifndef D_STR_FAHRENHEIT
+#define D_STR_FAHRENHEIT "Fahrenheit"
+#endif  // D_STR_FAHRENHEIT
+#ifndef D_STR_CELSIUS_FAHRENHEIT
+#define D_STR_CELSIUS_FAHRENHEIT D_STR_CELSIUS "/" D_STR_FAHRENHEIT
+#endif  // D_STR_CELSIUS_FAHRENHEIT
 #ifndef D_STR_UP
 #define D_STR_UP "Up"
 #endif  // D_STR_UP
@@ -258,6 +270,21 @@
 #ifndef D_STR_FIXED
 #define D_STR_FIXED "Fixed"
 #endif  // D_STR_FIXED
+#ifndef D_STR_TYPE
+#define D_STR_TYPE "Type"
+#endif  // D_STR_TYPE
+#ifndef D_STR_SPECIAL
+#define D_STR_SPECIAL "Special"
+#endif  // D_STR_SPECIAL
+#ifndef D_STR_RECYCLE
+#define D_STR_RECYCLE "Recycle"
+#endif  // D_STR_RECYCLE
+#ifndef D_STR_ID
+#define D_STR_ID "Id"
+#endif  // D_STR_ID
+#ifndef D_STR_VANE
+#define D_STR_VANE "Vane"
+#endif  // D_STR_VANE
 
 #ifndef D_STR_AUTO
 #define D_STR_AUTO "Auto"
@@ -360,6 +387,9 @@
 
 // Compound words/phrases/descriptions from pre-defined words.
 // Note: Obviously these need to be defined *after* their component words.
+#ifndef D_STR_ECONOTOGGLE
+#define D_STR_ECONOTOGGLE D_STR_ECONO " " D_STR_TOGGLE
+#endif  // D_STR_ECONOTOGGLE
 #ifndef D_STR_EYEAUTO
 #define D_STR_EYEAUTO D_STR_EYE " " D_STR_AUTO
 #endif  // D_STR_EYEAUTO
@@ -372,6 +402,9 @@
 #ifndef D_STR_POWERTOGGLE
 #define D_STR_POWERTOGGLE D_STR_POWER " " D_STR_TOGGLE
 #endif  // D_STR_POWERTOGGLE
+#ifndef D_STR_POWERBUTTON
+#define D_STR_POWERBUTTON D_STR_POWER " " D_STR_BUTTON
+#endif  // D_STR_POWERBUTTON
 #ifndef D_STR_PREVIOUSPOWER
 #define D_STR_PREVIOUSPOWER D_STR_PREVIOUS " " D_STR_POWER
 #endif  // D_STR_PREVIOUSPOWER
@@ -390,6 +423,9 @@
 #ifndef D_STR_SWINGVTOGGLE
 #define D_STR_SWINGVTOGGLE D_STR_SWINGV " " D_STR_TOGGLE
 #endif  // D_STR_SWINGVTOGGLE
+#ifndef D_STR_TURBOTOGGLE
+#define D_STR_TURBOTOGGLE D_STR_TURBO " " D_STR_TOGGLE
+#endif  // D_STR_TURBOTOGGLE
 
 // Separators
 #ifndef D_CHR_TIME_SEP
@@ -472,6 +508,9 @@
 #ifndef D_STR_ARGO
 #define D_STR_ARGO "ARGO"
 #endif  // D_STR_ARGO
+#ifndef D_STR_BOSE
+#define D_STR_BOSE "BOSE"
+#endif  // D_STR_BOSE
 #ifndef D_STR_CARRIER_AC
 #define D_STR_CARRIER_AC "CARRIER_AC"
 #endif  // D_STR_CARRIER_AC
@@ -484,6 +523,9 @@
 #ifndef D_STR_COOLIX
 #define D_STR_COOLIX "COOLIX"
 #endif  // D_STR_COOLIX
+#ifndef D_STR_CORONA_AC
+#define D_STR_CORONA_AC "CORONA_AC"
+#endif  // D_STR_CORONA_AC
 #ifndef D_STR_DAIKIN
 #define D_STR_DAIKIN "DAIKIN"
 #endif  // D_STR_DAIKIN
@@ -520,9 +562,15 @@
 #ifndef D_STR_DOSHISHA
 #define D_STR_DOSHISHA "DOSHISHA"
 #endif  // D_STR_DOSHISHA
+#ifndef D_STR_ECOCLIM
+#define D_STR_ECOCLIM "ECOCLIM"
+#endif  // D_STR_ECOCLIM
 #ifndef D_STR_ELECTRA_AC
 #define D_STR_ELECTRA_AC "ELECTRA_AC"
 #endif  // D_STR_ELECTRA_AC
+#ifndef D_STR_ELITESCREENS
+#define D_STR_ELITESCREENS "ELITESCREENS"
+#endif  // D_STR_ELITESCREENS
 #ifndef D_STR_EPSON
 #define D_STR_EPSON "EPSON"
 #endif  // D_STR_EPSON
@@ -547,6 +595,9 @@
 #ifndef D_STR_HAIER_AC_YRW02
 #define D_STR_HAIER_AC_YRW02 "HAIER_AC_YRW02"
 #endif  // D_STR_HAIER_AC_YRW02
+#ifndef D_STR_HAIER_AC176
+#define D_STR_HAIER_AC176 "HAIER_AC176"
+#endif  // D_STR_HAIER_AC176
 #ifndef D_STR_HITACHI_AC
 #define D_STR_HITACHI_AC "HITACHI_AC"
 #endif  // D_STR_HITACHI_AC
@@ -559,6 +610,9 @@
 #ifndef D_STR_HITACHI_AC3
 #define D_STR_HITACHI_AC3 "HITACHI_AC3"
 #endif  // D_STR_HITACHI_AC3
+#ifndef D_STR_HITACHI_AC344
+#define D_STR_HITACHI_AC344 "HITACHI_AC344"
+#endif  // D_STR_HITACHI_AC344
 #ifndef D_STR_HITACHI_AC424
 #define D_STR_HITACHI_AC424 "HITACHI_AC424"
 #endif  // D_STR_HITACHI_AC424
@@ -568,6 +622,9 @@
 #ifndef D_STR_JVC
 #define D_STR_JVC "JVC"
 #endif  // D_STR_JVC
+#ifndef D_STR_KELON
+#define D_STR_KELON "KELON"
+#endif  // D_STR_KELON
 #ifndef D_STR_KELVINATOR
 #define D_STR_KELVINATOR "KELVINATOR"
 #endif  // D_STR_KELVINATOR
@@ -589,9 +646,21 @@
 #ifndef D_STR_MAGIQUEST
 #define D_STR_MAGIQUEST "MAGIQUEST"
 #endif  // D_STR_MAGIQUEST
+#ifndef D_STR_METZ
+#define D_STR_METZ "METZ"
+#endif  // D_STR_METZ
 #ifndef D_STR_MIDEA
 #define D_STR_MIDEA "MIDEA"
 #endif  // D_STR_MIDEA
+#ifndef D_STR_MIDEA24
+#define D_STR_MIDEA24 "MIDEA24"
+#endif  // D_STR_MIDEA24
+#ifndef D_STR_MILESTAG2
+#define D_STR_MILESTAG2 "MILESTAG2"
+#endif  // D_STR_MILESTAG2
+#ifndef D_STR_MIRAGE
+#define D_STR_MIRAGE "MIRAGE"
+#endif  // D_STR_MIRAGE
 #ifndef D_STR_MITSUBISHI
 #define D_STR_MITSUBISHI "MITSUBISHI"
 #endif  // D_STR_MITSUBISHI
@@ -640,6 +709,9 @@
 #ifndef D_STR_PANASONIC_AC
 #define D_STR_PANASONIC_AC "PANASONIC_AC"
 #endif  // D_STR_PANASONIC_AC
+#ifndef D_STR_PANASONIC_AC32
+#define D_STR_PANASONIC_AC32 D_STR_PANASONIC_AC"32"
+#endif  // D_STR_PANASONIC_AC32
 #ifndef D_STR_PIONEER
 #define D_STR_PIONEER "PIONEER"
 #endif  // D_STR_PIONEER
@@ -673,6 +745,12 @@
 #ifndef D_STR_SANYO
 #define D_STR_SANYO "SANYO"
 #endif  // D_STR_SANYO
+#ifndef D_STR_SANYO_AC
+#define D_STR_SANYO_AC "SANYO_AC"
+#endif  // D_STR_SANYO_AC
+#ifndef D_STR_SANYO_AC88
+#define D_STR_SANYO_AC88 "SANYO_AC88"
+#endif  // D_STR_SANYO_AC88
 #ifndef D_STR_SANYO_LC7461
 #define D_STR_SANYO_LC7461 "SANYO_LC7461"
 #endif  // D_STR_SANYO_LC7461
@@ -697,29 +775,53 @@
 #ifndef D_STR_TCL112AC
 #define D_STR_TCL112AC "TCL112AC"
 #endif  // D_STR_TCL112AC
+#ifndef D_STR_TECHNIBEL_AC
+#define D_STR_TECHNIBEL_AC "TECHNIBEL_AC"
+#endif  // D_STR_TECHNIBEL_AC
 #ifndef D_STR_TECO
 #define D_STR_TECO "TECO"
 #endif  // D_STR_TECO
+#ifndef D_STR_TEKNOPOINT
+#define D_STR_TEKNOPOINT "TEKNOPOINT"
+#endif  // D_STR_TEKNOPOINT
 #ifndef D_STR_TOSHIBA_AC
 #define D_STR_TOSHIBA_AC "TOSHIBA_AC"
 #endif  // D_STR_TOSHIBA_AC
+#ifndef D_STR_TRANSCOLD
+#define D_STR_TRANSCOLD "TRANSCOLD"
+#endif  // D_STR_TRANSCOLD
 #ifndef D_STR_TROTEC
 #define D_STR_TROTEC "TROTEC"
 #endif  // D_STR_TROTEC
+#ifndef D_STR_TROTEC_3550
+#define D_STR_TROTEC_3550 D_STR_TROTEC "_3550"
+#endif  // D_STR_TROTEC_3550
+#ifndef D_STR_TRUMA
+#define D_STR_TRUMA "TRUMA"
+#endif  // D_STR_TRUMA
 #ifndef D_STR_UNUSED
 #define D_STR_UNUSED "UNUSED"
 #endif  // D_STR_UNUSED
 #ifndef D_STR_VESTEL_AC
 #define D_STR_VESTEL_AC "VESTEL_AC"
 #endif  // D_STR_VESTEL_AC
+#ifndef D_STR_VOLTAS
+#define D_STR_VOLTAS "VOLTAS"
+#endif  // D_STR_VOLTAS
 #ifndef D_STR_WHIRLPOOL_AC
 #define D_STR_WHIRLPOOL_AC "WHIRLPOOL_AC"
 #endif  // D_STR_WHIRLPOOL_AC
 #ifndef D_STR_WHYNTER
 #define D_STR_WHYNTER "WHYNTER"
 #endif  // D_STR_WHYNTER
+#ifndef D_STR_XMP
+#define D_STR_XMP "XMP"
+#endif  // D_STR_XMP
+#ifndef D_STR_ZEPEAL
+#define D_STR_ZEPEAL "ZEPEAL"
+#endif  // D_STR_ZEPEAL
 
-// IRrecvDumpV2
+// IRrecvDumpV2+
 #ifndef D_STR_TIMESTAMP
 #define D_STR_TIMESTAMP "Timestamp"
 #endif  // D_STR_TIMESTAMP
@@ -729,9 +831,12 @@
 #ifndef D_STR_MESGDESC
 #define D_STR_MESGDESC "Mesg Desc."
 #endif  // D_STR_MESGDESC
+#ifndef D_STR_TOLERANCE
+#define D_STR_TOLERANCE "Tolerance"
+#endif  // D_STR_TOLERANCE
 #ifndef D_STR_IRRECVDUMP_STARTUP
 #define D_STR_IRRECVDUMP_STARTUP \
-    "IRrecvDumpV2 is now running and waiting for IR input on Pin %d"
+    "IRrecvDump is now running and waiting for IR input on Pin %d"
 #endif  // D_STR_IRRECVDUMP_STARTUP
 #ifndef D_WARN_BUFFERFULL
 #define D_WARN_BUFFERFULL \
