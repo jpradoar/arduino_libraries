@@ -10,6 +10,9 @@ additional boards manager urls
 http://arduino.esp8266.com/stable/package_esp8266com_index.json  
 
 
+Preference config-file in
+/home/jprado/.arduino15/preferences.txt
+
  Tools > board > board Manager
  Search esp8266
 </pre>
