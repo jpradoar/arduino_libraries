@@ -17,3 +17,8 @@ Preference config-file in
  Search esp8266
 </pre>
 
+
+
+### Libs
+https://www.arduinolibraries.info/libraries
+https://www.arduino.cc/reference/en/libraries/
