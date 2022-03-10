@@ -6,8 +6,7 @@
 
 ### Dir
 <pre>
-ls -l  /home/$(whoami)/Arduino/
-libraries/
+ls -l  /home/$(whoami)/Arduino/libraries/
 </pre>
 
 ### additional boards manager urls
