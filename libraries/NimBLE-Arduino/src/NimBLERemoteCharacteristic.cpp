@@ -241,7 +241,8 @@ bool NimBLERemoteCharacteristic::retrieveDescriptors(const NimBLEUUID *uuid_filt
     }
 
     int rc = 0;
-    ble_task_data_t taskData = {this, xTaskGetCurrentTaskHandle(), 0, nullptr};
+    TaskHandle_t cur_task = xTaskGetCurrentTaskHandle();
+    ble_task_data_t taskData = {this, cur_task, 0, nullptr};
 
     // If we don't know the end handle of this characteristic retrieve the next one in the service
     // The end handle is the next characteristic definition handle -1.
@@ -256,6 +257,10 @@ bool NimBLERemoteCharacteristic::retrieveDescriptors(const NimBLEUUID *uuid_filt
             return false;
         }
 
+#ifdef ulTaskNotifyValueClear
+        // Clear the task notification value to ensure we block
+        ulTaskNotifyValueClear(cur_task, ULONG_MAX);
+#endif
         ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
 
         if (taskData.rc != 0) {
@@ -277,6 +282,10 @@ bool NimBLERemoteCharacteristic::retrieveDescriptors(const NimBLEUUID *uuid_filt
         return false;
     }
 
+#ifdef ulTaskNotifyValueClear
+    // Clear the task notification value to ensure we block
+    ulTaskNotifyValueClear(cur_task, ULONG_MAX);
+#endif
     ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
 
     if (taskData.rc != 0) {
@@ -310,14 +319,31 @@ NimBLERemoteDescriptor* NimBLERemoteCharacteristic::getDescriptor(const NimBLEUU
             return m_descriptorVector.back();
         }
 
-        // If the request was successful but 16/32 bit descriptor not found
+        // If the request was successful but 16/32 bit uuid not found
         // try again with the 128 bit uuid.
         if(uuid.bitSize() == BLE_UUID_TYPE_16 ||
            uuid.bitSize() == BLE_UUID_TYPE_32)
         {
             NimBLEUUID uuid128(uuid);
             uuid128.to128();
-            return getDescriptor(uuid128);
+            if(retrieveDescriptors(&uuid128)) {
+                if(m_descriptorVector.size() > prev_size) {
+                    return m_descriptorVector.back();
+                }
+            }
+        } else {
+            // If the request was successful but the 128 bit uuid not found
+            // try again with the 16 bit uuid.
+            NimBLEUUID uuid16(uuid);
+            uuid16.to16();
+            // if the uuid was 128 bit but not of the BLE base type this check will fail
+            if (uuid16.bitSize() == BLE_UUID_TYPE_16) {
+                if(retrieveDescriptors(&uuid16)) {
+                    if(m_descriptorVector.size() > prev_size) {
+                        return m_descriptorVector.back();
+                    }
+                }
+            }
         }
     }
 
@@ -477,7 +503,8 @@ std::string NimBLERemoteCharacteristic::readValue(time_t *timestamp) {
 
     int rc = 0;
     int retryCount = 1;
-    ble_task_data_t taskData = {this, xTaskGetCurrentTaskHandle(),0, &value};
+    TaskHandle_t cur_task = xTaskGetCurrentTaskHandle();
+    ble_task_data_t taskData = {this, cur_task, 0, &value};
 
     do {
         rc = ble_gattc_read_long(pClient->getConnId(), m_handle, 0,
@@ -489,6 +516,10 @@ std::string NimBLERemoteCharacteristic::readValue(time_t *timestamp) {
             return value;
         }
 
+#ifdef ulTaskNotifyValueClear
+        // Clear the task notification value to ensure we block
+        ulTaskNotifyValueClear(cur_task, ULONG_MAX);
+#endif
         ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
         rc = taskData.rc;
 
@@ -551,11 +582,12 @@ int NimBLERemoteCharacteristic::onReadCB(uint16_t conn_handle,
 
     if(rc == 0) {
         if(attr) {
-            if(((*strBuf).length() + attr->om->om_len) > BLE_ATT_ATTR_MAX_LEN) {
+            uint32_t data_len = OS_MBUF_PKTLEN(attr->om);
+            if(((*strBuf).length() + data_len) > BLE_ATT_ATTR_MAX_LEN) {
                 rc = BLE_ATT_ERR_INVALID_ATTR_VALUE_LEN;
             } else {
-                NIMBLE_LOGD(LOG_TAG, "Got %d bytes", attr->om->om_len);
-                (*strBuf) += std::string((char*) attr->om->om_data, attr->om->om_len);
+                NIMBLE_LOGD(LOG_TAG, "Got %d bytes", data_len);
+                (*strBuf) += std::string((char*) attr->om->om_data, data_len);
                 return 0;
             }
         }
@@ -745,7 +777,8 @@ bool NimBLERemoteCharacteristic::writeValue(const uint8_t* data, size_t length, 
         return (rc==0);
     }
 
-    ble_task_data_t taskData = {this, xTaskGetCurrentTaskHandle(), 0, nullptr};
+    TaskHandle_t cur_task = xTaskGetCurrentTaskHandle();
+    ble_task_data_t taskData = {this, cur_task, 0, nullptr};
 
     do {
         if(length > mtu) {
@@ -765,6 +798,10 @@ bool NimBLERemoteCharacteristic::writeValue(const uint8_t* data, size_t length, 
             return false;
         }
 
+#ifdef ulTaskNotifyValueClear
+        // Clear the task notification value to ensure we block
+        ulTaskNotifyValueClear(cur_task, ULONG_MAX);
+#endif
         ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
         rc = taskData.rc;
 

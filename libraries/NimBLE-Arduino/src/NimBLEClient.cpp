@@ -74,6 +74,7 @@ NimBLEClient::NimBLEClient(const NimBLEAddress &peerAddress) : m_peerAddress(pee
     m_pConnParams.min_ce_len = BLE_GAP_INITIAL_CONN_MIN_CE_LEN; // Minimum length of connection event in 0.625ms units
     m_pConnParams.max_ce_len = BLE_GAP_INITIAL_CONN_MAX_CE_LEN; // Maximum length of connection event in 0.625ms units
 
+    memset(&m_dcTimer, 0, sizeof(m_dcTimer));
     ble_npl_callout_init(&m_dcTimer, nimble_port_get_dflt_eventq(),
                          NimBLEClient::dcTimerCb, this);
 } // NimBLEClient
@@ -91,6 +92,8 @@ NimBLEClient::~NimBLEClient() {
     if(m_deleteCallbacks && m_pClientCallbacks != &defaultCallbacks) {
         delete m_pClientCallbacks;
     }
+
+    ble_npl_callout_deinit(&m_dcTimer);
 
 } // ~NimBLEClient
 
@@ -206,7 +209,8 @@ bool NimBLEClient::connect(const NimBLEAddress &address, bool deleteAttibutes) {
         m_peerAddress = address;
     }
 
-    ble_task_data_t taskData = {this, xTaskGetCurrentTaskHandle(), 0, nullptr};
+    TaskHandle_t cur_task = xTaskGetCurrentTaskHandle();
+    ble_task_data_t taskData = {this, cur_task, 0, nullptr};
     m_pTaskData = &taskData;
     int rc = 0;
 
@@ -259,6 +263,10 @@ bool NimBLEClient::connect(const NimBLEAddress &address, bool deleteAttibutes) {
         return false;
     }
 
+#ifdef ulTaskNotifyValueClear
+    // Clear the task notification value to ensure we block
+    ulTaskNotifyValueClear(cur_task, ULONG_MAX);
+#endif
     // Wait for the connect timeout time +1 second for the connection to complete
     if(ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(m_connectTimeout + 1000)) == pdFALSE) {
         m_pTaskData = nullptr;
@@ -309,7 +317,8 @@ bool NimBLEClient::connect(const NimBLEAddress &address, bool deleteAttibutes) {
  * @return True on success.
  */
 bool NimBLEClient::secureConnection() {
-    ble_task_data_t taskData = {this, xTaskGetCurrentTaskHandle(), 0, nullptr};
+    TaskHandle_t cur_task = xTaskGetCurrentTaskHandle();
+    ble_task_data_t taskData = {this, cur_task, 0, nullptr};
 
     int retryCount = 1;
 
@@ -323,6 +332,10 @@ bool NimBLEClient::secureConnection() {
             return false;
         }
 
+#ifdef ulTaskNotifyValueClear
+        // Clear the task notification value to ensure we block
+        ulTaskNotifyValueClear(cur_task, ULONG_MAX);
+#endif
         ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
     } while (taskData.rc == (BLE_HS_ERR_HCI_BASE + BLE_ERR_PINKEY_MISSING) && retryCount--);
 
@@ -576,14 +589,31 @@ NimBLERemoteService* NimBLEClient::getService(const NimBLEUUID &uuid) {
             return m_servicesVector.back();
         }
 
-        // If the request was successful but 16/32 bit service not found
+        // If the request was successful but 16/32 bit uuid not found
         // try again with the 128 bit uuid.
         if(uuid.bitSize() == BLE_UUID_TYPE_16 ||
            uuid.bitSize() == BLE_UUID_TYPE_32)
         {
             NimBLEUUID uuid128(uuid);
             uuid128.to128();
-            return getService(uuid128);
+            if(retrieveServices(&uuid128)) {
+                if(m_servicesVector.size() > prev_size) {
+                    return m_servicesVector.back();
+                }
+            }
+        } else {
+            // If the request was successful but the 128 bit uuid not found
+            // try again with the 16 bit uuid.
+            NimBLEUUID uuid16(uuid);
+            uuid16.to16();
+            // if the uuid was 128 bit but not of the BLE base type this check will fail
+            if (uuid16.bitSize() == BLE_UUID_TYPE_16) {
+                if(retrieveServices(&uuid16)) {
+                    if(m_servicesVector.size() > prev_size) {
+                        return m_servicesVector.back();
+                    }
+                }
+            }
         }
     }
 
@@ -647,7 +677,8 @@ bool NimBLEClient::retrieveServices(const NimBLEUUID *uuid_filter) {
     }
 
     int rc = 0;
-    ble_task_data_t taskData = {this, xTaskGetCurrentTaskHandle(), 0, nullptr};
+    TaskHandle_t cur_task = xTaskGetCurrentTaskHandle();
+    ble_task_data_t taskData = {this, cur_task, 0, nullptr};
 
     if(uuid_filter == nullptr) {
         rc = ble_gattc_disc_all_svcs(m_conn_id, NimBLEClient::serviceDiscoveredCB, &taskData);
@@ -661,6 +692,11 @@ bool NimBLEClient::retrieveServices(const NimBLEUUID *uuid_filter) {
         m_lastErr = rc;
         return false;
     }
+
+#ifdef ulTaskNotifyValueClear
+    // Clear the task notification value to ensure we block
+    ulTaskNotifyValueClear(cur_task, ULONG_MAX);
+#endif
 
     // wait until we have all the services
     ulTaskNotifyTake(pdTRUE, portMAX_DELAY);

@@ -1,5 +1,5 @@
 // ArduinoJson - https://arduinojson.org
-// Copyright Benoit Blanchon 2014-2021
+// Copyright © 2014-2022, Benoit BLANCHON
 // MIT License
 
 #include <ArduinoJson.h>
@@ -131,7 +131,7 @@ TEST_CASE("ElementProxy::remove()") {
     ep["a"] = 1;
     ep["b"] = 2;
 
-    int i = 4;
+    size_t i = 4;
     char vla[i];
     strcpy(vla, "b");
     ep.remove(vla);
